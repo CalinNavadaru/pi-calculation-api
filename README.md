@@ -74,8 +74,8 @@ docker compose up -d
 ```
 
 Then access the following endpoints: 
-- http://127.0.0.1:8000/calculate_pi/?n=<value\>&method=\<wallis\|gauss\|madhava_leibniz\> (for computing PI using \<method\> up to \<value\> decimals)
-- http://127.0.0.1:8000/check_progress/?task_id=<value\> (for checking the task assigned to the \<value> id).
+- ```http://127.0.0.1:8000/calculate_pi/?n=<value\>&method=\<wallis\|gauss\|madhava_leibniz\>``` (for computing PI using \<method\> up to \<value\> decimals)
+- ```http://127.0.0.1:8000/check_progress/?task_id=<value\>``` (for checking the task assigned to the \<value> id).
 
 --- 
 
