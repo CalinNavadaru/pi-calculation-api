@@ -128,8 +128,8 @@ STATIC_ROOT = BASE_DIR / 'static_files'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-CELERY_BROKER_URL = "redis://localhost:6379/0"
-CELERY_RESULT_BACKEND = "redis://localhost:6379/1"
+CELERY_BROKER_URL = f"{config["CELERY_BROKER_URL"]}"
+CELERY_RESULT_BACKEND = f"{config["CELERY_RESULT_BACKEND"]}"
 CELERY_TASK_TRACK_STARTED = True
 
 
@@ -137,7 +137,7 @@ CACHES = {
     "default": {
         "BACKEND": "django.core.cache.backends.redis.RedisCache",
         "LOCATION": [
-            f"redis://{config["CACHE_NAME"]}:6379/2"
+            f"{config["CACHE"]}"
         ],
         "TIMEOUT": 30
     }
