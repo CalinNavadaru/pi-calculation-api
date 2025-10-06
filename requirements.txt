@@ -2,3 +2,6 @@ Django~=5.2.7
 djangorestframework
 python-dotenv
 celery
+celery-types
+celery[redis]
+redis
