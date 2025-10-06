@@ -1,3 +1,7 @@
+networks:
+  pi_net:
+    external: true
+
 services:
   redis:
     image: redis:latest
@@ -8,3 +12,27 @@ services:
       retries: 5
     ports:
       - "6379:6379"
+
+  web:
+    build: .
+    env_file:
+      - .env
+    container_name: django_app
+    command: python manage.py runserver 0.0.0.0:8000
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    depends_on:
+      - redis
+
+  celery:
+    build: .
+    env_file:
+      - .env
+    container_name: celery_worker
+    command: celery -A pi_calculation_api worker --loglevel=info
+    volumes:
+      - .:/app
+    depends_on:
+      - redis

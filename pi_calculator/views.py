@@ -1,15 +1,16 @@
 from celery.result import AsyncResult
+from django.core.cache import cache
 from rest_framework.exceptions import ValidationError
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from pi_calculator.pi_calculation_utils import CALCULATION_METHODS
 from pi_calculator.tasks import compute_pi
 
 
-# Create your views here.
-
 class CalculatePiView(APIView):
+
     def get(self, request: Request):
         decimals = request.query_params.get('n')
         method = request.query_params.get('method')
@@ -26,9 +27,12 @@ class CalculatePiView(APIView):
         except ValueError:
             raise ValidationError({"n": "The 'n' parameter must be a positive integer."})
 
-        if method not in ["madhava_leibniz", "wallis"]:
-            raise ValidationError({"method": "The 'method' parameter must be 'wallis' or 'madhava_leibniz'"})
+        if method not in CALCULATION_METHODS:
+            raise ValidationError({"method": f"The 'method' parameter must be {CALCULATION_METHODS.keys()}; Provided value: {method}"})
 
+        cached_value = cache.get("n")
+        if cached_value:
+            return Response({"result": cached_value})
         async_result = compute_pi.delay(decimals, method)
 
         return Response({"id_task": async_result.id})
@@ -58,6 +62,7 @@ class CheckProgressView(APIView):
 
         elif result.state == 'SUCCESS':
             response["result"] = result.result.get("result", None)
+            cache.set("n", response["result"], 30)
             response["progress"] = result.info.get("progress", None)
 
         return Response(response)

@@ -5,3 +5,4 @@ celery
 celery-types
 celery[redis]
 redis
+whitenoise
